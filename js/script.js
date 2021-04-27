@@ -2,7 +2,7 @@
 'use strict';
 
 class Todo {
-  constructor(form, input, todoList, todoCompleted, container, headerInput) {
+  constructor(form, input, todoList, todoCompleted, container, headerInput, todoEdit) {
     this.form = document.querySelector(form);
     this.input = document.querySelector(input);
     this.todoList = document.querySelector(todoList);
@@ -10,6 +10,7 @@ class Todo {
     this.todoData = new Map(JSON.parse(localStorage.getItem('todoList')));
     this.container = document.querySelector(container);
     this.headerInput = document.querySelector(headerInput);
+    this.todoEdit = document.querySelector(todoEdit);
   }
 
   addToStorage() {
@@ -31,6 +32,7 @@ class Todo {
     li.insertAdjacentHTML('beforeend', `
       <span class="text-todo">${todo.value}</span>
       <div class="todo-buttons">
+        <button class="todo-edit"></button>
         <button class="todo-remove"></button>
         <button class="todo-complete"></button>
       </div>
@@ -61,7 +63,7 @@ class Todo {
     return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
   }
 
-  deleteItem(key) {
+  deleteItem = key => {
     this.todoData.forEach(item => {
       if (item.key === key) {
         this.todoData.delete(item.key);
@@ -70,7 +72,7 @@ class Todo {
     this.render();
   }
 
-  completedItem(key) {
+  completedItem = key => {
     this.todoData.forEach(item => {
       if (item.key === key) {
         if (item.completed) {
@@ -83,13 +85,40 @@ class Todo {
     this.render();
   }
 
+  editItem(elem, key) {
+    elem.setAttribute('contenteditable', 'true');
+    elem.focus();
+    elem.addEventListener('input', () => {
+      this.todoData.forEach(item => {
+        if (item.key === key) {
+          item.value = elem.textContent;
+          this.addToStorage();
+          
+        }
+      });
+    });
+    elem.onblur = () => {
+      elem.setAttribute('contenteditable', 'false');
+    };
+  }
+
   handler() {
     this.container.addEventListener('click', e => {
       const target = e.target;
+      // let key = target.closest('.todo-item').key;
       if (target.classList.contains('todo-complete')) {
-        this.completedItem(target.closest('.todo-item').key);
+        target.closest('.todo-item').classList.toggle('todo-item-toggle');
+        setTimeout(this.completedItem, 1000, target.closest('.todo-item').key);
+
       } else if (target.classList.contains('todo-remove')) {
-        this.deleteItem(target.closest('.todo-item').key);
+        let question = confirm('Вы уверены что хотите удалить?');
+          if (question) {
+            target.closest('.todo-item').classList.toggle('todo-item-delete');
+            setTimeout(this.deleteItem, 500, target.closest('.todo-item').key);
+          }
+      } else if (target.classList.contains('todo-edit')) {
+        let elem = target.closest('.todo-item').firstElementChild;
+        this.editItem(elem, target.closest('.todo-item').key)
       }
     });
   }
@@ -102,6 +131,6 @@ class Todo {
 }
 
 const todo = new Todo('.todo-control', '.header-input', '.todo-list',
-  '.todo-completed', '.todo-container', '.header-input');
+  '.todo-completed', '.todo-container', '.header-input', '.todo-edit');
 
 todo.init();

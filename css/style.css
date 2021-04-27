@@ -137,7 +137,26 @@ body {
     margin: 0 0 10px 0;
     padding: 14px 100px 14px 14px;
     word-break: break-word;
+    opacity: 1;
+    transform: opacity;
+    transition-duration: 1s;
+
+    
 }
+
+.todo-item-delete {
+    background-color: rgb(241, 76, 76);
+    transform: translateX(-150%);
+    transition-duration: 1s;
+}
+
+.todo-item-toggle {
+    opacity: 0;
+    transform: opacity;
+    transition-duration: 1s;
+}
+
+
 
 .todo-item:last-of-type {
     margin: 0;
@@ -188,6 +207,18 @@ body {
 
 .todo-edit {
     background-image: url("../img/pencil.png");
+}
+
+.text-todo:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px lightskyblue;
+    border-radius: 5px;
+    background-color: rgb(151, 220, 241);
+    
+}
+
+.text-todo {
+    padding: 5px;
 }
 
 .todo-completed .todo-complete {
