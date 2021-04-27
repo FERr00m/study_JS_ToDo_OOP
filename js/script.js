@@ -38,8 +38,10 @@ class Todo {
       </div>
     `);
     if (todo.completed) {
+      li.classList.add('todo-done');
       this.todoCompleted.append(li);
     } else {
+      li.classList.add('todo-notdone')
       this.todoList.append(li);
     }
   }
@@ -76,8 +78,10 @@ class Todo {
     this.todoData.forEach(item => {
       if (item.key === key) {
         if (item.completed) {
+          item.style = 'transform: translateX(-150%);'
           item.completed = false;
         } else {
+          item.style = 'animation: change-background 1s ease;'
           item.completed = true;
         }
       }
@@ -106,14 +110,20 @@ class Todo {
     this.container.addEventListener('click', e => {
       const target = e.target;
       if (target.classList.contains('todo-complete')) {
-        target.closest('.todo-item').classList.toggle('todo-item-toggle');
-        setTimeout(this.completedItem, 1000, target.closest('.todo-item').key);
+        if (target.closest('.todo-item').classList.contains('todo-done')) {
+          target.closest('.todo-item').classList.toggle('todo-item-toggle-up');
+          setTimeout(this.completedItem, 1000, target.closest('.todo-item').key);
+        } else if (target.closest('.todo-item').classList.contains('todo-notdone')) {
+          target.closest('.todo-item').classList.toggle('todo-item-toggle-down');
+          setTimeout(this.completedItem, 1000, target.closest('.todo-item').key);
+        }
+        
 
       } else if (target.classList.contains('todo-remove')) {
         let question = confirm('Вы уверены что хотите удалить?');
           if (question) {
             target.closest('.todo-item').classList.toggle('todo-item-delete');
-            setTimeout(this.deleteItem, 500, target.closest('.todo-item').key);
+            setTimeout(this.deleteItem, 1000, target.closest('.todo-item').key);
           }
       } else if (target.classList.contains('todo-edit')) {
         let elem = target.closest('.todo-item').firstElementChild;
