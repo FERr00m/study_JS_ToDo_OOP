@@ -105,7 +105,6 @@ class Todo {
   handler() {
     this.container.addEventListener('click', e => {
       const target = e.target;
-      // let key = target.closest('.todo-item').key;
       if (target.classList.contains('todo-complete')) {
         target.closest('.todo-item').classList.toggle('todo-item-toggle');
         setTimeout(this.completedItem, 1000, target.closest('.todo-item').key);
